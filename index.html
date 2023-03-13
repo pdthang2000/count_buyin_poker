@@ -15,12 +15,12 @@
             <div class="pr-2 bg-green-200">Buyin cost:</div>
             <input class="ml-2 focus:ring-0 focus:outline-0 focus:border-b-2 border-black border-b-2 w-1/5" type="number" id="buyin_cost" onkeyup="update_cost()" />
         </div>
-        <button class="mx-2 w-1/5 bg-blue-500 btn rounded text-white">
+        <!-- <button class="mx-2 w-1/5 bg-blue-500 btn rounded text-white">
             Undo
         </button>
         <button class="mr-2 w-1/5 bg-green-500 btn rounded text-white">
             Reset
-        </button>
+        </button> -->
     </div>
     <div style="width: 500px" id="board">
         <div class="flex pr-2 pt-5 w-full">
@@ -35,7 +35,7 @@
                 <input class="focus:outline-0 focus:border-b-2 border-black border-b-2 w-full" type="text">
             </div>
             <div class="w-3/12 flex pr-5">
-                <div class="pr-10 cnt_buyin" id="cnt_1">1</div>
+                <div class="pr-10 cnt_buyin" id="cnt_1">0</div>
                 <button onclick="increase_buyin('cnt_1')">
                     <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBVcGxvYWRlZCB0bzogU1ZHIFJlcG8sIHd3dy5zdmdyZXBvLmNvbSwgR2VuZXJhdG9yOiBTVkcgUmVwbyBNaXhlciBUb29scyAtLT4NCjxzdmcgZmlsbD0iIzAwMDAwMCIgaGVpZ2h0PSI4MDBweCIgd2lkdGg9IjgwMHB4IiB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiANCgkgdmlld0JveD0iMCAwIDMwMC4wMDMgMzAwLjAwMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8Zz4NCgk8Zz4NCgkJPHBhdGggZD0iTTE1MCwwQzY3LjE1OSwwLDAuMDAxLDY3LjE1OSwwLjAwMSwxNTBjMCw4Mi44MzgsNjcuMTU3LDE1MC4wMDMsMTQ5Ljk5NywxNTAuMDAzUzMwMC4wMDIsMjMyLjgzOCwzMDAuMDAyLDE1MA0KCQkJQzMwMC4wMDIsNjcuMTU5LDIzMi44MzksMCwxNTAsMHogTTIxMy4yODEsMTY2LjUwMWgtNDguMjd2NTAuNDY5Yy0wLjAwMyw4LjQ2My02Ljg2MywxNS4zMjMtMTUuMzI4LDE1LjMyMw0KCQkJYy04LjQ2OCwwLTE1LjMyOC02Ljg2LTE1LjMyOC0xNS4zMjh2LTUwLjQ2NEg4Ny4zN2MtOC40NjYtMC4wMDMtMTUuMzIzLTYuODYzLTE1LjMyOC0xNS4zMjhjMC04LjQ2Myw2Ljg2My0xNS4zMjYsMTUuMzI4LTE1LjMyOA0KCQkJbDQ2Ljk4NCwwLjAwM1Y5MS4wNTdjMC04LjQ2Niw2Ljg2My0xNS4zMjgsMTUuMzI2LTE1LjMyOGM4LjQ2OCwwLDE1LjMzMSw2Ljg2MywxNS4zMjgsMTUuMzI4bDAuMDAzLDQ0Ljc4N2w0OC4yNjUsMC4wMDUNCgkJCWM4LjQ2Ni0wLjAwNSwxNS4zMzEsNi44NiwxNS4zMjgsMTUuMzI4QzIyOC42MDcsMTU5LjY0MywyMjEuNzQyLDE2Ni41MDEsMjEzLjI4MSwxNjYuNTAxeiIvPg0KCTwvZz4NCjwvZz4NCjwvc3ZnPg==
                     " alt="asds" class="w-6" />
@@ -57,10 +57,13 @@
     <div class="flex" style="width: 500px">
         <div class="w-7/12"></div>
         <div class="w-3/12">
-            <div id="total_buyin">1 Buyin</div>
-            <div id="total_chip">500 chip</div>
+            <div id="total_buyin">0 Buyin</div>
+            <div id="total_chip">0 chip</div>
         </div>
-        <div class="w-2/12" id="total_checkout">0</div>
+        <div class="w-2/12">
+            <div id="total_checkout">0</div>
+            <div id="difference" class="text-red-500"></div>
+        </div>
     </div>
 </body>
 
@@ -69,6 +72,7 @@
     var globalId = 2;
     var buyinCost = 500;
     var checkout = 0;
+    var totalChip = 0;
     var today = new Date();
     document.getElementById('buyin_cost').value = 500;
     document.getElementById('today').innerHTML = today.toLocaleTimeString("en-US") + ' ' + today.toLocaleDateString();
@@ -82,6 +86,7 @@
         };
 
         document.getElementById('total_checkout').innerHTML = total;
+        document.getElementById('difference').innerHTML = total - totalChip;
     }
 
     function update_cost() {
@@ -97,9 +102,9 @@
             let dom = buyinDoms[i];
             total += Number(dom.innerHTML);
         };
-
+        totalChip = total * buyinCost;
         document.getElementById('total_buyin').innerHTML = total + ' Buyin';
-        document.getElementById('total_chip').innerHTML = total * buyinCost + ' chip';
+        document.getElementById('total_chip').innerHTML = totalChip + ' chip';
     }
 
     function increase_buyin(id) {
@@ -109,6 +114,7 @@
         num++;
         document.getElementById(id).innerHTML = num;
         update_total_buyins();
+        update_checkout();
     }
 
     function decrease_buyin(id) {
@@ -119,6 +125,7 @@
         num--;
         document.getElementById(id).innerHTML = num;
         update_total_buyins();
+        update_checkout();
     }
 
     function add_row() {
@@ -136,6 +143,7 @@
         let board = document.getElementById('board');
         board.appendChild(row);
         update_total_buyins();
+
     }
 
     function create_stt_element(id) {
